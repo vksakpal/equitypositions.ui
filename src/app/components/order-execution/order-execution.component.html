@@ -1,0 +1,128 @@
+<div class="order-container">
+  <div class="header-section">
+    <button class="btn btn-back" (click)="goBack()">
+      ← Back to Positions
+    </button>
+    <h2>Execute Order</h2>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-container" *ngIf="submitSuccess">
+    <div class="success-message">
+      <span class="success-icon">✅</span>
+      <span>Order executed successfully! Redirecting to positions...</span>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-container" *ngIf="submitError && !isSubmitting">
+    <div class="error-message">
+      <span class="error-icon">⚠️</span>
+      <span>{{ submitError }}</span>
+    </div>
+  </div>
+
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="order-form" *ngIf="!submitSuccess">
+    <div class="form-group">
+      <label for="tradeId">Trade ID:</label>
+      <input
+        type="text"
+        id="tradeId"
+        formControlName="tradeId"
+        class="form-control"
+        [class.error]="getFieldError('tradeId')"
+        placeholder="Enter Trade ID"
+      />
+      <span class="error-message" *ngIf="getFieldError('tradeId')">
+        {{ getFieldError("tradeId") }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label for="symbol">Symbol:</label>
+      <input
+        type="text"
+        id="symbol"
+        formControlName="symbol"
+        class="form-control"
+        [class.error]="getFieldError('symbol')"
+        placeholder="e.g., AAPL"
+        style="text-transform: uppercase"
+      />
+      <span class="error-message" *ngIf="getFieldError('symbol')">
+        {{ getFieldError("symbol") }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label for="quantity">Quantity:</label>
+      <input
+        type="number"
+        id="quantity"
+        formControlName="quantity"
+        class="form-control"
+        [class.error]="getFieldError('quantity')"
+        placeholder="Enter quantity"
+        min="1"
+      />
+      <span class="error-message" *ngIf="getFieldError('quantity')">
+        {{ getFieldError("quantity") }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label for="actionType">Action Type:</label>
+      <select
+        id="actionType"
+        formControlName="actionType"
+        class="form-control"
+        [class.error]="getFieldError('actionType')"
+      >
+        <option value="">Select Action Type</option>
+        <option *ngFor="let actionType of actionTypes" [value]="actionType">
+          {{ actionType }}
+        </option>
+      </select>
+      <span class="error-message" *ngIf="getFieldError('actionType')">
+        {{ getFieldError("actionType") }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label for="orderType">Order Type:</label>
+      <select
+        id="orderType"
+        formControlName="orderType"
+        class="form-control"
+        [class.error]="getFieldError('orderType')"
+      >
+        <option value="">Select Order Type</option>
+        <option *ngFor="let orderType of orderTypes" [value]="orderType">
+          {{ orderType.replace("_", " ") }}
+        </option>
+      </select>
+      <span class="error-message" *ngIf="getFieldError('orderType')">
+        {{ getFieldError("orderType") }}
+      </span>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="orderForm.invalid || isSubmitting"
+      >
+        <span *ngIf="!isSubmitting">Execute Order</span>
+        <span *ngIf="isSubmitting">⏳ Executing...</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="resetForm()"
+        [disabled]="isSubmitting"
+      >
+        Reset
+      </button>
+    </div>
+  </form>
+</div>

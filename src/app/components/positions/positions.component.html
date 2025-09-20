@@ -1,0 +1,66 @@
+<div class="positions-container">
+  <div class="header-section">
+    <h2>Current Positions</h2>
+    <div class="header-buttons">
+      <button class="btn btn-execute-order" (click)="executeOrder()">
+        📈 Execute Order
+      </button>
+      <button
+        class="btn btn-refresh"
+        (click)="refreshPositions()"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">🔄 Refresh</span>
+        <span *ngIf="loading">⏳ Loading...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading positions...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="error-message">
+      <span class="error-icon">⚠️</span>
+      <span>{{ error }}</span>
+    </div>
+    <button class="btn btn-retry" (click)="refreshPositions()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-container" *ngIf="!loading && !error">
+    <table class="positions-table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let position of positions; trackBy: trackBySymbol">
+          <td class="symbol-cell">{{ position.symbol }}</td>
+          <td class="quantity-cell" 
+              [class.positive-quantity]="position.quantity > 0"
+              [class.negative-quantity]="position.quantity < 0">
+            {{ position.quantity | number }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Data State -->
+  <div class="no-data" *ngIf="!loading && !error && positions.length === 0">
+    <span class="no-data-icon">📊</span>
+    <p>No positions found.</p>
+    <button class="btn btn-refresh" (click)="refreshPositions()">
+      Load Positions
+    </button>
+  </div>
+</div>
